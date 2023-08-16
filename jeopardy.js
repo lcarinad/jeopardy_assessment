@@ -26,15 +26,17 @@ let categories = [];
  */
 
 async function getCategoryIds() {
-  let res = await axios.get("http://jservice.io/api/categories?count=100");
+  let res = await axios.get("https://jservice.io/api/categories?count=100");
   let catArr = res.data;
-
-  for (let i = 0; i < 6; i++) {
+  let length = 5;
+  for (let i = 0; i < length; i++) {
     let catArrIdx = Math.floor(Math.random() * catArr.length) + 1;
-    categories.push(catArr[catArrIdx].id);
+    let cluesCount = catArr[catArrIdx].clues_count;
+    if (cluesCount >= 5) {
+      categories.push(catArr[catArrIdx].id);
+    }
   }
-  console.log(categories);
-  return categories;
+  getCategory(categories);
 }
 
 /** Return object with data about a category:
@@ -49,7 +51,23 @@ async function getCategoryIds() {
  *   ]
  */
 
-function getCategory(catId) {}
+async function getCategory(catId) {
+  let resultObj = [];
+  for (let id of catId) {
+    let idRes = await axios.get(`https://jservice.io/api/category?id=${id}`);
+    let { title, clues } = idRes.data;
+
+    let cluesArr = clues.map(({ question, answer }) => ({
+      question,
+      answer,
+      showing: null,
+    }));
+
+    resultObj.push({ title, clues: cluesArr });
+  }
+  console.log(resultObj);
+  return resultObj;
+}
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
  *
