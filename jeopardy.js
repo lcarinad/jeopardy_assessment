@@ -28,11 +28,11 @@ let categories = [];
 async function getCategoryIds() {
   let res = await axios.get("https://jservice.io/api/categories?count=100");
   let catArr = res.data;
-  let length = 5;
-  for (let i = 0; i < length; i++) {
-    let catArrIdx = Math.floor(Math.random() * catArr.length) + 1;
+  let length = 6;
+  while (categories.length < length) {
+    let catArrIdx = Math.floor(Math.random() * catArr.length);
     let cluesCount = catArr[catArrIdx].clues_count;
-    if (cluesCount >= 5) {
+    if (cluesCount >= 5 && !categories.includes(catArr[catArrIdx].id)) {
       categories.push(catArr[catArrIdx].id);
     }
   }
@@ -66,7 +66,7 @@ async function getCategory(catId) {
     resultObj.push({ title, clues: cluesArr });
   }
   console.log(resultObj);
-  return resultObj;
+  fillTable(resultObj);
 }
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
@@ -77,7 +77,30 @@ async function getCategory(catId) {
  *   (initally, just show a "?" where the question/answer would go.)
  */
 
-async function fillTable() {}
+async function fillTable(objects) {
+  let height = 5;
+  let width = 6;
+  let $board = $("#jeopardy");
+  let $thead = $("th");
+  let $firstrow = $("<tr>");
+  $board.append($thead);
+  $thead.append($firstrow);
+
+  for (let object of objects) {
+    const title = object.title;
+    let $td = $("<td>").text(title).css("text-transform", "capitalize");
+    $firstrow.append($td);
+
+    for (let y = 0; y < height; y++) {
+      let $row = $("<tr>");
+      $("tbody").append($row);
+      for (let x = 0; x < width; x++) {
+        let $cell = $("<td>").text("?");
+        $row.append($cell);
+      }
+    }
+  }
+}
 
 /** Handle clicking on a clue: show the question or answer.
  *
@@ -106,7 +129,13 @@ function hideLoadingView() {}
  * - create HTML table
  * */
 
-async function setupAndStart() {}
+async function setupAndStart() {
+  $("#start").click(function (e) {
+    e.preventDefault();
+    getCategoryIds();
+  });
+}
+setupAndStart();
 
 /** On click of start / restart button, set up game. */
 
