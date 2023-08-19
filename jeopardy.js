@@ -19,6 +19,8 @@
 //  ]
 
 let categories = [];
+let num_cat = 6;
+let num_clues_in_cat = 5;
 
 /** Get NUM_CATEGORIES random category from API.
  *
@@ -78,27 +80,27 @@ async function getCategory(catId) {
  */
 
 async function fillTable(objects) {
-  let height = 5;
-  let width = 6;
-  let $board = $("#jeopardy");
-  let $thead = $("th");
-  let $firstrow = $("<tr>");
-  $board.append($thead);
-  $thead.append($firstrow);
-
+  $("#spin-container").empty();
+  $("#jeopardy thead").empty();
+  let $headRow = $("<tr>");
   for (let object of objects) {
-    const title = object.title;
-    let $td = $("<td>").text(title).css("text-transform", "capitalize");
-    $firstrow.append($td);
+    let $th = $("<th>").text(object.title).css("text-transform", "capitalize");
+    $headRow.append($th);
+  }
+  $("#jeopardy thead").append($headRow);
 
-    for (let y = 0; y < height; y++) {
-      let $row = $("<tr>");
-      $("tbody").append($row);
-      for (let x = 0; x < width; x++) {
-        let $cell = $("<td>").text("?");
-        $row.append($cell);
-      }
+  $("#jeopardy tbody").empty();
+
+  while (num_clues_in_cat > 0) {
+    let $NUM_QUESTIONS_PER_CAT = $("<tr>");
+    $("#jeopardy tbody").append($NUM_QUESTIONS_PER_CAT);
+    let num_cat_temp = num_cat;
+    while (num_cat_temp > 0) {
+      let $td = $("<td>").text("?");
+      $NUM_QUESTIONS_PER_CAT.append($td);
+      num_cat_temp--;
     }
+    num_clues_in_cat--;
   }
 }
 
