@@ -83,24 +83,28 @@ async function fillTable(objects) {
   $("#spin-container").empty();
   $("#jeopardy thead").empty();
   let $headRow = $("<tr>");
+  let objIdx = 0;
   for (let object of objects) {
-    let $th = $("<th>").text(object.title).css("text-transform", "capitalize");
+    let $th = $("<th>")
+      .text(object.title)
+      .css("text-transform", "capitalize")
+      .attr("id", `${objIdx}-${0}`);
     $headRow.append($th);
+    objIdx++;
   }
   $("#jeopardy thead").append($headRow);
 
   $("#jeopardy tbody").empty();
 
-  while (num_clues_in_cat > 0) {
-    let $NUM_QUESTIONS_PER_CAT = $("<tr>");
-    $("#jeopardy tbody").append($NUM_QUESTIONS_PER_CAT);
-    let num_cat_temp = num_cat;
-    while (num_cat_temp > 0) {
-      let $td = $("<td>").text("?");
-      $NUM_QUESTIONS_PER_CAT.append($td);
-      num_cat_temp--;
+  //appending the tbdoy row
+  for (let clueIdx = 0; clueIdx < num_clues_in_cat; clueIdx++) {
+    let $bodyRow = $("<tr>");
+    $("#jeopardy tbody").append($bodyRow);
+
+    for (let objIdx = 0; objIdx < num_cat; objIdx++) {
+      let $td = $("<td>").text("?").attr("id", `${objIdx}-${clueIdx}`);
+      $bodyRow.append($td);
     }
-    num_clues_in_cat--;
   }
 }
 
