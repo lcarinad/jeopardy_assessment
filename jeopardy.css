@@ -30,3 +30,6 @@ td {
 
   font-family: "Handjet", cursive;
 }
+td:hover {
+  cursor: pointer;
+}
