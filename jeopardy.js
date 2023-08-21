@@ -53,9 +53,9 @@ async function getCategoryIds() {
  *   ]
  */
 
-async function getCategory(catId) {
+async function getCategory(catIds) {
   let resultObj = [];
-  for (let id of catId) {
+  for (let id of catIds) {
     let idRes = await axios.get(`https://jservice.io/api/category?id=${id}`);
     let { title, clues } = idRes.data;
 
@@ -67,7 +67,7 @@ async function getCategory(catId) {
 
     resultObj.push({ title, clues: cluesArr });
   }
-  console.log(resultObj);
+
   fillTable(resultObj);
 }
 
@@ -85,10 +85,7 @@ async function fillTable(objects) {
   let $headRow = $("<tr>");
   let objIdx = 0;
   for (let object of objects) {
-    let $th = $("<th>")
-      .text(object.title)
-      .css("text-transform", "capitalize")
-      .attr("id", `${objIdx}-${0}`);
+    let $th = $("<th>").text(object.title).attr("id", `${objIdx}-${0}`);
     $headRow.append($th);
     objIdx++;
   }
@@ -102,51 +99,73 @@ async function fillTable(objects) {
     $("#jeopardy tbody").append($bodyRow);
 
     for (let objIdx = 0; objIdx < num_cat; objIdx++) {
-      let $td = $("<td>").text("?").attr("id", `${objIdx}-${clueIdx}`);
+      let $td = $("<td>")
+        .text("?")
+        .attr("id", `${objIdx}, ${clueIdx}`)
+        .addClass("box");
+      // .val(objects[objIdx].clues);
       $bodyRow.append($td);
     }
+    handleClick(objects);
   }
+
+  // console.log(objects[objIdx].clues);
+  /** Handle clicking on a clue: show the question or answer.
+   *
+   * Uses .showing property on clue to determine what to show:
+   * - if currently null, show question & set .showing to "question"
+   * - if currently "question", show answer & set .showing to "answer"
+   * - if currently "answer", ignore click
+   * */
+  function handleClick(objects) {
+    $("#jeopardy tbody").on("click", "td", function (evt) {
+      let $element = $(this);
+      let catId = evt.target.id.charAt(0);
+      let rowId = evt.target.id.charAt(3);
+
+      let clues = objects[catId].clues;
+      let clickedClue = clues[rowId];
+
+      if (clickedClue.showing === null) {
+        clickedClue.showing = "question";
+        $element.text(clickedClue.question);
+      } else if (clickedClue.showing === "question") {
+        clickedClue.showing = "answer";
+        $element.text(clickedClue.answer);
+      }
+    });
+  }
+
+  /** Wipe the current Jeopardy board, show the loading spinner,
+   * and update the button used to fetch data.
+   */
+
+  function showLoadingView() {}
+
+  /** Remove the loading spinner and update the button used to fetch data. */
+
+  function hideLoadingView() {}
+
+  /** Start game:
+   *
+   * - get random category Ids
+   * - get data for each category
+   * - create HTML table
+   * */
+
+  async function setupAndStart() {
+    $("#start").click(function (e) {
+      e.preventDefault();
+      getCategoryIds();
+    });
+  }
+  setupAndStart();
+
+  /** On click of start / restart button, set up game. */
+
+  // TODO
+
+  /** On page load, add event handler for clicking clues */
+
+  // TODO
 }
-
-/** Handle clicking on a clue: show the question or answer.
- *
- * Uses .showing property on clue to determine what to show:
- * - if currently null, show question & set .showing to "question"
- * - if currently "question", show answer & set .showing to "answer"
- * - if currently "answer", ignore click
- * */
-
-function handleClick(evt) {}
-
-/** Wipe the current Jeopardy board, show the loading spinner,
- * and update the button used to fetch data.
- */
-
-function showLoadingView() {}
-
-/** Remove the loading spinner and update the button used to fetch data. */
-
-function hideLoadingView() {}
-
-/** Start game:
- *
- * - get random category Ids
- * - get data for each category
- * - create HTML table
- * */
-
-async function setupAndStart() {
-  $("#start").click(function (e) {
-    e.preventDefault();
-    getCategoryIds();
-  });
-}
-setupAndStart();
-
-/** On click of start / restart button, set up game. */
-
-// TODO
-
-/** On page load, add event handler for clicking clues */
-
-// TODO

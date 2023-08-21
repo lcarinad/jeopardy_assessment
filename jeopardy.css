@@ -1,7 +1,37 @@
-/* some colors you may find useful:
-  #115ff4
-  #060ce9
-  #28a200
-  #8d2ab5
-  #74119c
-*/
+/* somecolors you may find useful: #115ff4 #060ce9 #28a200 #8d2ab5 #74119c */
+
+/* .class {
+  width: 80px;
+  height: 80px;
+} */
+h1 {
+  font-family: "Handjet", cursive;
+  font-size: 50px;
+}
+#start {
+  font-family: "Handjet", cursive;
+}
+#jeopardy {
+  text-align: center;
+  font-size: 12px;
+  background-color: #060ce9;
+  color: white;
+  border-collapse: collapse;
+  border: solid 1px white;
+  display: table;
+}
+#jeopardy th {
+  width: 12em;
+  padding: 1em;
+  border: solid 1px white;
+  text-transform: uppercase;
+  font-family: "Ubuntu", sans-serif;
+}
+
+td {
+  /* width: 100px;
+  height: 100px; */
+  border: solid 1px white;
+  display: table-cell;
+  font-family: "Handjet", cursive;
+}
